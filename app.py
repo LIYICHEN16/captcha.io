@@ -4,6 +4,7 @@ import torch
 from PIL import Image
 from captcha import CRNN, idx_to_char
 from torchvision import transforms
+from torch.nn.modules.container import Sequential
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
@@ -13,7 +14,7 @@ num_classes = 63 + 1
 # 這一行一定要放在 torch.load 前
 torch.serialization.add_safe_globals([CRNN])
 
-model = torch.load('crnn_captcha_quantized.pth', map_location='cpu')
+model = torch.load('crnn_captcha_quantized.pth', map_location='cpu', weights_only=False)
 model.eval()
 
 transform = transforms.Compose([
