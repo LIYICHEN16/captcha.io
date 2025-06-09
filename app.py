@@ -1,30 +1,21 @@
 # app.py
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import torch
 from PIL import Image
-from flask_cors import CORS
 from captcha import CRNN, idx_to_char
+from torchvision import transforms
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
-# 下面程式碼同你原本
-
-if __name__ == '__main__':
-    app.run(debug=True)
- # 你的模型與字典
-
-app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}})
-
-
-# 啟動時載入模型
+# 載入模型
 num_classes = 63 + 1
 model = CRNN(num_classes)
-model = torch.load('crnn_captcha_quantized.pth', map_location='cpu')
+model.load_state_dict(torch.load('crnn_captcha_quantized.pth', map_location='cpu'))
 model.eval()
 
-from torchvision import transforms
+# 圖像預處理
 transform = transforms.Compose([
     transforms.Resize((40, 150)),
     transforms.ToTensor(),
@@ -49,4 +40,3 @@ def predict():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
