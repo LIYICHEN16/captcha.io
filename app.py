@@ -21,7 +21,7 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 # 啟動時載入模型
 num_classes = 63 + 1
 model = CRNN(num_classes)
-model.load_state_dict(torch.load('crnn_captcha.pth', map_location='cpu'))  # 指定模型檔名
+model.load_state_dict(torch.load('crnn_captcha_quantized.pth', map_location='cpu'))  # 指定模型檔名
 model.eval()
 
 from torchvision import transforms
