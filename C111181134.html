@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>驗證碼辨識 Demo</title>
+    <style>
+        body { font-family: "Microsoft JhengHei", Arial, sans-serif; }
+        .container { max-width: 400px; margin: 50px auto; }
+        .result { margin-top: 20px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>驗證碼辨識 </h2>
+        <form id="upload-form" enctype="multipart/form-data">
+            <label>選擇圖片 (jpg/png):</label><br>
+            <input type="file" id="image" name="image" accept=".jpg,.jpeg,.png" required><br><br>
+            <button type="submit">辨識</button>
+        </form>
+        <div class="result" id="result"></div>
+        <div id="preview"></div>
+    </div>
+    <script>
+        // 預覽圖片
+        document.getElementById('image').onchange = function(evt) {
+            let file = evt.target.files[0];
+            if (file) {
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('preview').innerHTML = `<img src="${e.target.result}" width="200">`;
+                }
+                reader.readAsDataURL(file);
+            }
+        };
+
+        document.getElementById('upload-form').onsubmit = async function(e) {
+            e.preventDefault();
+            let formData = new FormData();
+            formData.append('image', document.getElementById('image').files[0]);
+            document.getElementById('result').textContent = "辨識中...";
+            try {
+                let res = await fetch('http://127.0.0.1:5000/predict', { method: 'POST', body: formData });
+                if (!res.ok) throw new Error("伺服器錯誤：" + res.status);
+                let data = await res.json();
+                document.getElementById('result').textContent = '辨識結果：' + data.result;
+            } catch (err) {
+                document.getElementById('result').textContent = '辨識失敗：' + err.message;
+            }
+        }
+    </script>
+</body>
+</html>
