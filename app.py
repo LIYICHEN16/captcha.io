@@ -1,4 +1,3 @@
-# app.py
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import torch
@@ -9,13 +8,14 @@ from torchvision import transforms
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
-# 載入模型
 num_classes = 63 + 1
-model = CRNN(num_classes)
-model.load_state_dict(torch.load('crnn_captcha_quantized.pth', map_location='cpu'))
+
+# 這一行加在這裡
+torch.serialization.add_safe_globals({'captcha.CRNN': CRNN})
+
+model = torch.load('crnn_captcha_quantized.pth', map_location='cpu')
 model.eval()
 
-# 圖像預處理
 transform = transforms.Compose([
     transforms.Resize((40, 150)),
     transforms.ToTensor(),
