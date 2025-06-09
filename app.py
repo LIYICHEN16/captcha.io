@@ -10,8 +10,8 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 
 num_classes = 63 + 1
 
-# 這一行加在這裡
-torch.serialization.add_safe_globals({'captcha.CRNN': CRNN})
+# 這一行一定要放在 torch.load 前
+torch.serialization.add_safe_globals([CRNN])
 
 model = torch.load('crnn_captcha_quantized.pth', map_location='cpu')
 model.eval()
