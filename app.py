@@ -3,10 +3,20 @@ from flask import Flask, request, jsonify
 import torch
 from PIL import Image
 from flask_cors import CORS
-from captcha import CRNN, idx_to_char  # 你的模型與字典
+from captcha import CRNN, idx_to_char
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
+
+# 下面程式碼同你原本
+
+if __name__ == '__main__':
+    app.run(debug=True)
+ # 你的模型與字典
+
+app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": "*"}})
+
 
 # 啟動時載入模型
 num_classes = 63 + 1
